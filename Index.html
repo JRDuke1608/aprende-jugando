@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Jugando con JRDuke</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        header h1 {
+            color: #ff6b6b;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            color: #4d96ff;
+            font-size: 1rem;
+            margin-top: 0;
+        }
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            border: 4px solid #ffd166;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            background-color: #fff9db;
+        }
+        .card .icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .card h2 {
+            color: #2b2d42;
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+        .card p {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        .view-section {
+            display: none;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .btn-opcion {
+            background: white;
+            border: 2px solid #3d5a80;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-opcion:hover {
+            background-color: #e0fbfc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENÚ PRINCIPAL -->
+    <header id="main-header">
+        <h1>🌟 ¡Aprende Jugando con JRDuke! 🌟</h1>
+        <p>Selecciona un módulo (8 actividades cada uno)</p>
+    </header>
+
+    <main class="menu-container" id="main-menu">
+        <div class="card" onclick="iniciarModulo(1)">
+            <span class="icon">🎨</span>
+            <h2>1. Colores</h2>
+            <p>8 retos de color y números</p>
+        </div>
+        <div class="card" onclick="iniciarModulo(2)">
+            <span class="icon">🔤</span>
+            <h2>2. Letras</h2>
+            <p>8 palabras para completar</p>
+        </div>
+        <div class="card" onclick="iniciarModulo(3)">
+            <span class="icon">🦁</span>
+            <h2>3. Memorama</h2>
+            <p>8 parejas de animales</p>
+        </div>
+        <div class="card" onclick="iniciarModulo(4)">
+            <span class="icon">🌈</span>
+            <h2>4. Teoría de Colores</h2>
+            <p>8 objetos y frutas</p>
+        </div>
+        <div class="card" onclick="iniciarModulo(5)">
+            <span class="icon">🔢</span>
+            <h2>5. Cantidades</h2>
+            <p>8 retos de conteo (1 al 10)</p>
+        </div>
+    </main>
+
+    <!-- MÓDULO 1 -->
+    <div id="modulo1-view" class="view-section">
+        <h2>🎨 Colores y Números (<span id="m1-index">1</span>/8)</h2>
+        <p id="m1-instruccion">Toca el color correcto:</p>
+        <div id="m1-paleta" style="margin: 15px 0;"></div>
+        <div id="m1-lienzo" style="display:flex; justify-content:center; align-items:center; height:90px; background:#f0f8ff; border:3px dashed #333; border-radius:10px; font-size:2.5rem; margin:15px 0;"></div>
+        <p id="mensaje-modulo1" style="font-weight:bold; color:#2b2d42;"></p>
+        <button onclick="siguienteActividad(1)" style="background:#4d96ff; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer; margin-right:5px;">Siguiente ➡</button>
+        <button onclick="regresarMenu()" style="background:#6c757d; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer;">⬅ Menú</button>
+    </div>
+
+    <!-- MÓDULO 2 -->
+    <div id="modulo2-view" class="view-section">
+        <h2>🔤 Completa la Palabra (<span id="m2-index">1</span>/8)</h2>
+        <div id="m2-icono" style="font-size: 3.5rem; margin: 5px;"></div>
+        <h3><span id="m2-inicio"></span><span id="m2-espacio" style="border-bottom: 2px dashed #ff6b6b; padding: 0 5px; color:#ff6b6b;">___</span></h3>
+        <p id="m2-ayuda" style="font-size:0.9rem; color:#6c757d;"></p>
+        <div id="m2-botones" style="margin: 15px 0; display:flex; justify-content:center; gap:8px; flex-wrap:wrap;"></div>
+        <p id="mensaje-modulo2" style="font-weight: bold; color: #2b2d42;"></p>
+        <button onclick="siguienteActividad(2)" style="background:#4d96ff; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer; margin-right:5px;">Siguiente ➡</button>
+        <button onclick="regresarMenu()" style="background:#6c757d; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer;">⬅ Menú</button>
+    </div>
+
+    <!-- MÓDULO 3 -->
+    <div id="modulo3-view" class="view-section">
+        <h2>🦁 Memorama de Animales (<span id="m3-index">1</span>/8)</h2>
+        <p>¡Descubre el animal oculto!</p>
+        <div id="m3-tarjeta" onclick="voltearTarjetaMemoria()" style="background:#ffd166; height:110px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:3rem; cursor:pointer; max-width:220px; margin: 15px auto; box-shadow:0 4px 6px rgba(0,0,0,0.1);">❓</div>
+        <p id="mensaje-modulo3" style="font-weight: bold; color: #2b2d42;"></p>
+        <button onclick="siguienteActividad(3)" style="background:#4d96ff; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer; margin-right:5px;">Siguiente ➡</button>
+        <button onclick="regresarMenu()" style="background:#6c757d; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer;">⬅ Menú</button>
+    </div>
+
+    <!-- MÓDULO 4 -->
+    <div id="modulo4-view" class="view-section">
+        <h2>🌈 Teoría de Colores (<span id="m4-index">1</span>/8)</h2>
+        <p id="m4-pregunta" style="font-weight:bold;"></p>
+        <div id="m4-opciones" style="display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap:wrap;"></div>
+        <p id="mensaje-modulo4" style="font-weight: bold; color: #2b2d42;"></p>
+        <button onclick="siguienteActividad(4)" style="background:#4d96ff; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer; margin-right:5px;">Siguiente ➡</button>
+        <button onclick="regresarMenu()" style="background:#6c757d; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer;">⬅ Menú</button>
+    </div>
+
+    <!-- MÓDULO 5 -->
+    <div id="modulo5-view" class="view-section">
+        <h2>🔢 Cantidades (1 al 10) (<span id="m5-index">1</span>/8)</h2>
+        <div id="m5-iconos" style="font-size: 2rem; letter-spacing: 3px; margin: 10px 0; min-height:50px;"></div>
+        <p style="font-weight: bold; color: #2b2d42;">¿Cuántos objetos ves?</p>
+        <div id="m5-opciones" style="display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap:wrap;"></div>
+        <p id="mensaje-modulo5" style="font-weight: bold; color: #2b2d42;"></p>
+        <button onclick="siguienteActividad(5)" style="background:#4d96ff; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer; margin-right:5px;">Siguiente ➡</button>
+        <button onclick="regresarMenu()" style="background:#6c757d; color:white; padding:8px 15px; border:none; border-radius:8px; cursor:pointer;">⬅ Menú</button>
+    </div>
+
+    <script>
+        // DATOS DE LAS 8 ACTIVIDADES POR MÓDULO
+        const datosMod1 = [
+            { color: 'Rojo', eng: 'Red', hex: '#ff4d4d', figura: '🟥' },
+            { color: 'Azul', eng: 'Blue', hex: '#3399ff', figura: '🟦' },
+            { color: 'Amarillo', eng: 'Yellow', hex: '#ffd700', figura: '🟨' },
+            { color: 'Verde', eng: 'Green', hex: '#6bcb77', figura: '🟩' },
+            { color: 'Naranja', eng: 'Orange', hex: '#ff9f43', figura: '🟧' },
+            { color: 'Morado', eng: 'Purple', hex: '#9b59b6', figura: '🟪' },
+            { color: 'Rosa', eng: 'Pink', hex: '#ff6b81', figura: '🌸' },
+            { color: 'Café', eng: 'Brown', hex: '#8d6e63', figura: '🪵' }
+        ];
+
+        const datosMod2 = [
+            { inicio: 'ma', faltante: 'no', palabraCompleta: 'mano', emoji: '🖐️', ayuda: 'Parte del cuerpo para saludar', opciones: ['ne', 'no', 'pa'] },
+            { inicio: 'so', faltante: 'l', palabraCompleta: 'sol', emoji: '☀️', ayuda: 'Brilla en el cielo de día', opciones: ['l', 'p', 's'] },
+            { flor: true, inicio: 'flo', faltante: 'r', palabraCompleta: 'flor', emoji: '🌸', ayuda: 'Planta bonita de jardín', opciones: ['r', 'n', 't'] },
+            { inicio: 'lu', faltante: 'na', palabraCompleta: 'luna', emoji: '🌙', ayuda: 'Sale de noche', opciones: ['pa', 'na', 'ma'] },
+            { inicio: 'ca', faltante: 'sa', palabraCompleta: 'casa', emoji: '🏠', ayuda: 'Donde vivimos', opciones: ['sa', 'pa', 'la'] },
+            { inicio: 'pe', faltante: 'rro', palabraCompleta: 'perro', emoji: '🐶', ayuda: 'Amigo fiel de cuatro patas', opciones: ['rro', 'to', 'mo'] },
+            { inicio: 'ga', faltante: 'to', palabraCompleta: 'gato', emoji: '🐱', ayuda: 'Mascota que dice miau', opciones: ['to', 'po', 'lo'] },
+            { inicio: 'a', faltante: 'gua', palabraCompleta: 'agua', emoji: '💧', ayuda: 'Líquido vital para beber', opciones: ['gua', 'to', 'pa'] }
+        ];
+
+        const datosMod3 = [
+            { animal: 'Gato', emoji: '🐱', sonido: '¡Miau! Es un Gato' },
+            { animal: 'Perro', emoji: '🐶', sonido: '¡Guau guau! Es un Perro' },
+            { animal: 'Vaca', emoji: '🐮', sonido: '¡Muuu! Es una Vaca' },
+            { animal: 'Pato', emoji: '🦆', sonido: '¡Cua cua! Es un Pato' },
+            { animal: 'León', emoji: '🦁', sonido: '¡Roar! Es un León' },
+            { animal: 'Rana', emoji: '🐸', sonido: '¡Croac croac! Es una Rana' },
+            { animal: 'Cerdo', emoji: '🐷', sonido: '¡Oinc oinc! Es un Cerdo' },
+            { animal: 'Oveja', emoji: '🐑', sonido: '¡Beeee! Es una Oveja' }
+        ];
+
+        const datosMod4 = [
+            { pregunta: '¿Cuál es la fruta de color ROJO?', opciones: [{ emoji: '🍌', corr: false }, { emoji: '🍎', corr: true }, { emoji: '🥬', corr: false }], respText: 'Manzana roja' },
+            { pregunta: '¿Cuál es el objeto de color AMARILLO?', opciones: [{ emoji: '🍋', corr: true }, { emoji: '🫐', corr: false }, { emoji: '🍅', corr: false }], respText: 'Limón amarillo' },
+            { pregunta: '¿Cuál es la verdura de color VERDE?', opciones: [{ emoji: '🥕', corr: false }, { emoji: '🥦', corr: true }, { emoji: '🍓', corr: false }], respText: 'Brócoli verde' },
+            { pregunta: '¿Cuál es la fruta de color NARANJA?', opciones: [{ emoji: '🍊', corr: true }, { emoji: '🍆', corr: false }, { emoji: '🥛', corr: false }], respText: 'Naranja' },
+            { pregunta: '¿Cuál es el animal de color ROSA?', opciones: [{ emoji: '🐘', corr: false }, { emoji: '🦩', corr: true }, { emoji: '🦍', corr: false }], respText: 'Flamenco rosa' },
+            { pregunta: '¿Cuál es la bebida de color BLANCO?', opciones: [{ emoji: '☕', corr: false }, { emoji: '🥛', corr: true }, { emoji: '🧃', corr: false }], respText: 'Leche blanca' },
+            { pregunta: '¿Cuál es el cielo de día de color AZUL?', opciones: [{ emoji: '🌌', corr: false }, { emoji: '☁️', corr: true }, { emoji: '🌙', corr: false }], respText: 'Cielo azul' },
+            { pregunta: '¿Cuál es el chocolate de color CAFÉ?', opciones: [{ emoji: '🍫', corr: true }, { emoji: '🧀', corr: false }, { emoji: '🍚', corr: false }], respText: 'Chocolate café' }
+        ];
+
+        const datosMod5 = [
+            { cantidad: 3, iconos: '⭐⭐⭐', opciones: [2, 3, 5] },
+            { cantidad: 5, iconos: '🍎🍎🍎🍎🍎', opciones: [4, 5, 7] },
+            { cantidad: 2, iconos: '🐶🐶', opciones: [1, 2, 4] },
+            { cantidad: 7, iconos: '🎈🎈🎈🎈🎈🎈🎈', opciones: [6, 7, 9] },
+            { cantidad: 4, iconText: '🐱🐱🐱🐱', iconos: '🐱🐱🐱🐱', opciones: [3, 4, 6] },
+            { cantidad: 6, iconos: '🚗🚗🚗🚗🚗🚗', opciones: [5, 6, 8] },
+            { cantidad: 8, iconos: '⚽⚽⚽⚽⚽⚽⚽⚽', opciones: [7, 8, 10] },
+            { cantidad: 10, iconos: '🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟', opciones: [8, 9, 10] }
+        ];
+
+        let idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0, idx5 = 0;
+
+        function iniciarModulo(num) {
+            document.getElementById('main-header').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'none';
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`modulo${i}-view`).style.display = (i === num) ? 'block' : 'none';
+            }
+            if (num === 1) cargarMod1();
+            if (num === 2) cargarMod2();
+            if (num === 3) cargarMod3();
+            if (num === 4) cargarMod4();
+            if (num === 5) cargarMod5();
+        }
+
+        function regresarMenu() {
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`modulo${i}-view`).style.display = 'none';
+            }
+            document.getElementById('main-header').style.display = 'block';
+            document.getElementById('main-menu').style.display = 'grid';
+        }
+
+        function siguienteActividad(mod) {
+            if (mod === 1) { idx1 = (idx1 + 1) % datosMod1.length; cargarMod1(); }
+            if (mod === 2) { idx2 = (idx2 + 1) % datosMod2.length; cargarMod2(); }
+            if (mod === 3) { idx3 = (idx3 + 1) % datosMod3.length; cargarMod3(); }
+            if (mod === 4) { idx4 = (idx4 + 1) % datosMod4.length; cargarMod4(); }
+            if (mod === 5) { idx5 = (idx5 + 1) % datosMod5.length; cargarMod5(); }
+        }
+
+        // MÓDULO 1 LOGIC
+        function cargarMod1() {
+            document.getElementById('m1-index').innerText = idx1 + 1;
+            const item = datosMod1[idx1];
+            document.getElementById('mensaje-modulo1').innerText = "";
+            document.getElementById('m1-lienzo').innerHTML = item.figura;
+            
+            let paletaHTML = '';
+            // Generar 3 opciones revueltas (la correcta y 2 aleatorias)
+            let opcionesColor = [item];
+            while(opcionesColor.length < 3) {
+                let randItem = datosMod1[Math.floor(Math.random() * datosMod1.length)];
+                if(!opcionesColor.includes(randItem)) opcionesColor.push(randItem);
+            }
+            opcionesColor.sort(() => Math.random() - 0.5);
+
+            opcionesColor.forEach(c => {
+                paletaHTML += `<button class="btn-opcion" style="background:${c.hex}; color:white;" onclick="verificarMod1('${c.color}', '${item.color}', '${c.eng}')">${c.color} / ${c.eng}</button>`;
+            });
+            document.getElementById('m1-paleta').innerHTML = paletaHTML;
+        }
+
+        function verificarMod1(elegido, correcto, eng) {
+            const msg = document.getElementById('mensaje-modulo1');
+            if(elegido === correcto) {
+                msg.innerText = "¡Excelente! Color " + correcto;
+                hablarTexto(`¡Muy bien! ${correcto}, ${eng}`);
+            } else {
+                msg.innerText = "¡Inténtalo de nuevo!";
+                hablarTexto("Inténtalo otra vez");
+            }
+        }
+
+        // MÓDULO 2 LOGIC
+        function cargarMod2() {
+            document.getElementById('m2-index').innerText = idx2 + 1;
+            const item = datosMod2[idx2];
+            document.getElementById('mensaje-modulo2').innerText = "";
+            document.getElementById('m2-icono').innerText = item.emoji;
+            document.getElementById('m2-inicio').innerText = item.inicio;
+            document.getElementById('m2-espacio').innerText = "___";
+            document.getElementById('m2-espacio').style.color = "#ff6b6b";
+            document.getElementById('m2-ayuda').innerText = "Pista: " + item.ayuda;
+
+            let botonesHTML = '';
+            let opciones = [...item.opciones].sort(() => Math.random() - 0.5);
+            opciones.forEach(op => {
+                let esCorrecta = (op === item.faltante);
+                botonesHTML += `<button class="btn-opcion" onclick="verificarMod2('${op}', ${esCorrecta}, '${item.palabraCompleta}')">${item.inicio}${op}</button>`;
+            });
+            document.getElementById('m2-botones').innerHTML = botonesHTML;
+        }
+
+        function verificarMod2(op, correcta, palabra) {
+            const span = document.getElementById('m2-espacio');
+            const msg = document.getElementById('mensaje-modulo2');
+            if(correcta) {
+                span.innerText = op;
+                span.style.color = "#6bcb77";
+                msg.innerText = "¡Muy bien! ¡" + palabra + "!";
+                hablarTexto(`¡${palabra}! ¡Excelente!`);
+            } else {
+                msg.innerText = "¡Inténtalo otra vez!";
+                hablarTexto("Inténtalo de nuevo");
+            }
+        }
+
+        // MÓDULO 3 LOGIC
+        function cargarMod3() {
+            document.getElementById('m3-index').innerText = idx3 + 1;
+            document.getElementById('m3-tarjeta').innerText = "❓";
+            document.getElementById('m3-tarjeta').style.backgroundColor = "#ffd166";
+            document.getElementById('mensaje-modulo3').innerText = "Toca la tarjeta para descubrir el animal";
+        }
+
+        function voltearTarjetaMemoria() {
+            const item = datosMod3[idx3];
+            const tarjeta = document.getElementById('m3-tarjeta');
+            tarjeta.innerText = item.emoji;
+            tarjeta.style.backgroundColor = "#6bcb77";
+            document.getElementById('mensaje-modulo3').innerText = "¡Encontraste el " + item.animal + "!";
+            hablarTexto(item.sonido);
+        }
+
+        // MÓDULO 4 LOGIC
+        function cargarMod4() {
+            document.getElementById('m4-index').innerText = idx4 + 1;
+            const item = datosMod4[idx4];
+            document.getElementById('m4-pregunta').innerText = item.pregunta;
+            document.getElementById('mensaje-modulo4').innerText = "";
+
+            let html = '';
+            let ops = [...item.opciones].sort(() => Math.random() - 0.5);
+            ops.forEach(o => {
+                html += `<button class="btn-opcion" style="font-size:2rem;" onclick="verificarMod4(${o.corr}, '${item.respText}')">${o.emoji}</button>`;
+            });
+            document.getElementById('m4-opciones').innerHTML = html;
+        }
+
+        function verificarMod4(corr, texto) {
+            const msg = document.getElementById('mensaje-modulo4');
+            if(corr) {
+                msg.innerText = "¡Correcto! Es " + texto;
+                hablarTexto(`¡Muy bien! ${texto}`);
+            } else {
+                msg.innerText = "¡Inténtalo de nuevo!";
+                hablarTexto("Inténtalo otra vez");
+            }
+        }
+
+        // MÓDULO 5 LOGIC
+        function cargarMod5() {
+            document.getElementById('m5-index').innerText = idx5 + 1;
+            const item = datosMod5[idx5];
+            document.getElementById('m5-iconos').innerText = item.iconos;
+            document.getElementById('mensaje-modulo5').innerText = "";
+
+            let html = '';
+            let ops = [...item.opciones].sort(() => Math.random() - 0.5);
+            ops.forEach(n => {
+                let corr = (n === item.cantidad);
+                html += `<button class="btn-opcion" onclick="verificarMod5(${corr}, ${item.cantidad})">${n}</button>`;
+            });
+            document.getElementById('m5-opciones').innerHTML = html;
+        }
+
+        function verificarMod5(corr, cant) {
+            const msg = document.getElementById('mensaje-modulo5');
+            if(corr) {
+                msg.innerText = "¡Excelente! Son " + cant;
+                hablarTexto(`¡Muy bien! ${cant} elementos.`);
+            } else {
+                msg.innerText = "¡Inténtalo de nuevo!";
+                hablarTexto("Inténtalo otra vez");
+            }
+        }
+
+        function hablarTexto(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let mensaje = new SpeechSynthesisUtterance(texto);
+                mensaje.lang = 'es-ES';
+                window.speechSynthesis.speak(mensaje);
+            }
+        }
+    </script>
+</body>
+</html>
